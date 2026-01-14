@@ -5,6 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
+const crypto = require('crypto');
 const {
   buildProjectGenerationPrompt,
   validateProjectData,
@@ -30,8 +31,12 @@ router.post('/generate-project', async (req, res, next) => {
       });
     }
 
-    // Check cache first (based on description)
-    const cacheKey = `project_${projectData.description.toLowerCase().trim()}`;
+    // Check cache first (based on description hash)
+    const descriptionHash = crypto
+      .createHash('sha256')
+      .update(projectData.description.toLowerCase().trim())
+      .digest('hex');
+    const cacheKey = `project_${descriptionHash}`;
     const cached = getCachedResponse(cacheKey);
 
     if (cached) {
