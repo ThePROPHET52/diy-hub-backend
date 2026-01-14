@@ -9,7 +9,7 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-const MODEL = 'claude-3-5-sonnet-20241022';
+const MODEL = 'claude-3-5-sonnet-latest';
 const MAX_TOKENS = 1000;
 const TEMPERATURE = 0.3;
 
