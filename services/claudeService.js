@@ -1,0 +1,311 @@
+const Anthropic = require('@anthropic-ai/sdk');
+const {
+  buildEnhancementPrompt,
+  buildProjectGenerationPrompt,
+} = require('../utils/promptBuilder');
+
+// Initialize Anthropic client
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+const MODEL = 'claude-3-5-sonnet-20241022';
+const MAX_TOKENS = 1000;
+const TEMPERATURE = 0.3;
+
+/**
+ * Call Claude API to get product recommendation
+ * @param {Object} materialData - Material information
+ * @returns {Promise<Object>} Parsed recommendation object
+ */
+async function getProductRecommendation(materialData) {
+  try {
+    const prompt = buildEnhancementPrompt(materialData);
+
+    console.log(`[Claude] Requesting recommendation for: ${materialData.name}`);
+
+    const response = await anthropic.messages.create({
+      model: MODEL,
+      max_tokens: MAX_TOKENS,
+      temperature: TEMPERATURE,
+      system: prompt.system,
+      messages: prompt.messages,
+    });
+
+    // Extract text content from response
+    const textContent = response.content.find((block) => block.type === 'text');
+    if (!textContent) {
+      throw new Error('No text content in Claude response');
+    }
+
+    // Parse JSON response
+    let recommendation;
+    try {
+      recommendation = JSON.parse(textContent.text);
+    } catch (parseError) {
+      console.error('[Claude] Failed to parse JSON:', textContent.text);
+      throw new Error('Invalid JSON response from Claude API');
+    }
+
+    // Validate response structure
+    const validation = validateRecommendation(recommendation);
+    if (!validation.valid) {
+      throw new Error(`Invalid recommendation structure: ${validation.error}`);
+    }
+
+    console.log(`[Claude] Successfully got recommendation for: ${materialData.name}`);
+    return recommendation;
+  } catch (error) {
+    console.error('[Claude] Error getting recommendation:', error.message);
+
+    // Enhance error with more context
+    if (error.status === 401) {
+      throw new Error('Invalid Anthropic API key');
+    } else if (error.status === 429) {
+      throw new Error('Rate limit exceeded on Claude API');
+    } else if (error.status >= 500) {
+      throw new Error('Claude API server error');
+    }
+
+    throw error;
+  }
+}
+
+/**
+ * Call Claude API with retry logic
+ * @param {Object} materialData - Material information
+ * @param {number} maxRetries - Maximum number of retries (default: 2)
+ * @returns {Promise<Object>} Parsed recommendation object
+ */
+async function getProductRecommendationWithRetry(materialData, maxRetries = 2) {
+  let lastError;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await getProductRecommendation(materialData);
+    } catch (error) {
+      lastError = error;
+      console.error(`[Claude] Attempt ${attempt + 1} failed:`, error.message);
+
+      // Don't retry on client errors (400-499) except rate limits
+      if (error.status >= 400 && error.status < 500 && error.status !== 429) {
+        throw error;
+      }
+
+      // Wait before retrying with exponential backoff
+      if (attempt < maxRetries) {
+        const delay = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s
+        console.log(`[Claude] Retrying in ${delay}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  throw lastError;
+}
+
+/**
+ * Validate recommendation response structure
+ * @param {Object} recommendation - Recommendation object from Claude
+ * @returns {Object} { valid: boolean, error: string }
+ */
+function validateRecommendation(recommendation) {
+  if (!recommendation || typeof recommendation !== 'object') {
+    return { valid: false, error: 'Recommendation must be an object' };
+  }
+
+  const requiredFields = [
+    'primaryBrand',
+    'primaryModel',
+    'specification',
+    'reasoning',
+    'alternatives',
+    'buyingTips',
+    'quantitySuggestion',
+  ];
+
+  for (const field of requiredFields) {
+    if (!(field in recommendation)) {
+      return { valid: false, error: `Missing required field: ${field}` };
+    }
+  }
+
+  // Validate alternatives array
+  if (!Array.isArray(recommendation.alternatives)) {
+    return { valid: false, error: 'alternatives must be an array' };
+  }
+
+  // Validate each alternative has required fields
+  for (const alt of recommendation.alternatives) {
+    if (!alt.brand || !alt.model || !alt.note) {
+      return { valid: false, error: 'Each alternative must have brand, model, and note' };
+    }
+  }
+
+  return { valid: true };
+}
+
+/**
+ * Call Claude API to generate a project plan
+ * @param {Object} projectData - Project request information
+ * @returns {Promise<Object>} Parsed project plan object
+ */
+async function generateProjectPlan(projectData) {
+  try {
+    const prompt = buildProjectGenerationPrompt(projectData);
+
+    console.log(`[Claude] Requesting project plan for: ${projectData.description}`);
+
+    const response = await anthropic.messages.create({
+      model: MODEL,
+      max_tokens: 2000, // Project plans are longer than product recommendations
+      temperature: TEMPERATURE,
+      system: prompt.system,
+      messages: prompt.messages,
+    });
+
+    // Extract text content from response
+    const textContent = response.content.find((block) => block.type === 'text');
+    if (!textContent) {
+      throw new Error('No text content in Claude response');
+    }
+
+    // Parse JSON response
+    let projectPlan;
+    try {
+      projectPlan = JSON.parse(textContent.text);
+    } catch (parseError) {
+      console.error('[Claude] Failed to parse JSON:', textContent.text);
+      throw new Error('Invalid JSON response from Claude API');
+    }
+
+    // Validate response structure
+    const validation = validateProjectPlan(projectPlan);
+    if (!validation.valid) {
+      throw new Error(`Invalid project plan structure: ${validation.error}`);
+    }
+
+    console.log(`[Claude] Successfully generated project plan: ${projectPlan.title}`);
+    return projectPlan;
+  } catch (error) {
+    console.error('[Claude] Error generating project plan:', error.message);
+
+    // Enhance error with more context
+    if (error.status === 401) {
+      throw new Error('Invalid Anthropic API key');
+    } else if (error.status === 429) {
+      throw new Error('Rate limit exceeded on Claude API');
+    } else if (error.status >= 500) {
+      throw new Error('Claude API server error');
+    }
+
+    throw error;
+  }
+}
+
+/**
+ * Call Claude API with retry logic for project generation
+ * @param {Object} projectData - Project request information
+ * @param {number} maxRetries - Maximum number of retries (default: 2)
+ * @returns {Promise<Object>} Parsed project plan object
+ */
+async function generateProjectPlanWithRetry(projectData, maxRetries = 2) {
+  let lastError;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await generateProjectPlan(projectData);
+    } catch (error) {
+      lastError = error;
+      console.error(`[Claude] Attempt ${attempt + 1} failed:`, error.message);
+
+      // Don't retry on client errors (400-499) except rate limits
+      if (error.status >= 400 && error.status < 500 && error.status !== 429) {
+        throw error;
+      }
+
+      // Wait before retrying with exponential backoff
+      if (attempt < maxRetries) {
+        const delay = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s
+        console.log(`[Claude] Retrying in ${delay}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  throw lastError;
+}
+
+/**
+ * Validate project plan response structure
+ * @param {Object} projectPlan - Project plan object from Claude
+ * @returns {Object} { valid: boolean, error: string }
+ */
+function validateProjectPlan(projectPlan) {
+  if (!projectPlan || typeof projectPlan !== 'object') {
+    return { valid: false, error: 'Project plan must be an object' };
+  }
+
+  const requiredFields = [
+    'title',
+    'description',
+    'category',
+    'difficulty',
+    'estimatedTime',
+    'steps',
+    'materials',
+    'tools',
+    'safetyTips',
+    'estimatedCost',
+    'commonMistakes',
+  ];
+
+  for (const field of requiredFields) {
+    if (!(field in projectPlan)) {
+      return { valid: false, error: `Missing required field: ${field}` };
+    }
+  }
+
+  // Validate steps array
+  if (!Array.isArray(projectPlan.steps) || projectPlan.steps.length === 0) {
+    return { valid: false, error: 'steps must be a non-empty array' };
+  }
+
+  // Validate each step has required fields
+  for (const step of projectPlan.steps) {
+    if (!step.order || !step.title || !step.instructions) {
+      return { valid: false, error: 'Each step must have order, title, and instructions' };
+    }
+  }
+
+  // Validate materials array
+  if (!Array.isArray(projectPlan.materials)) {
+    return { valid: false, error: 'materials must be an array' };
+  }
+
+  // Validate tools array
+  if (!Array.isArray(projectPlan.tools)) {
+    return { valid: false, error: 'tools must be an array' };
+  }
+
+  // Validate safety tips array
+  if (!Array.isArray(projectPlan.safetyTips)) {
+    return { valid: false, error: 'safetyTips must be an array' };
+  }
+
+  // Validate common mistakes array
+  if (!Array.isArray(projectPlan.commonMistakes)) {
+    return { valid: false, error: 'commonMistakes must be an array' };
+  }
+
+  return { valid: true };
+}
+
+module.exports = {
+  getProductRecommendation,
+  getProductRecommendationWithRetry,
+  validateRecommendation,
+  generateProjectPlan,
+  generateProjectPlanWithRetry,
+  validateProjectPlan,
+};
