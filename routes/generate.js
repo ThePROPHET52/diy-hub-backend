@@ -11,7 +11,7 @@ const {
   validateProjectData,
 } = require('../utils/promptBuilder');
 const { generateProjectPlanWithRetry } = require('../services/claudeService');
-const { getCachedResponse, setCachedResponse } = require('../utils/cache');
+const { getCached, setCached } = require('../utils/cache');
 
 /**
  * POST /api/generate-project
@@ -37,7 +37,7 @@ router.post('/generate-project', async (req, res, next) => {
       .update(projectData.description.toLowerCase().trim())
       .digest('hex');
     const cacheKey = `project_${descriptionHash}`;
-    const cached = getCachedResponse(cacheKey);
+    const cached = getCached(cacheKey);
 
     if (cached) {
       console.log('[generate] Cache hit for project generation');
@@ -57,7 +57,7 @@ router.post('/generate-project', async (req, res, next) => {
     const projectPlan = await generateProjectPlanWithRetry(projectData);
 
     // Cache the response
-    setCachedResponse(cacheKey, projectPlan);
+    setCached(cacheKey, projectPlan);
 
     // Return success
     res.json({
