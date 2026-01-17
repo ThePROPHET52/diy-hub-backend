@@ -32,7 +32,7 @@ function errorHandler(err, req, res, next) {
       return res.status(500).json(errorResponse);
     }
 
-    if (err.message.includes('validation')) {
+    if (err.message.includes('validation') || err.message.includes('Invalid project plan')) {
       errorResponse.error = 'Validation error';
       errorResponse.message = err.message;
       return res.status(400).json(errorResponse);

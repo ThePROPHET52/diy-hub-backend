@@ -239,6 +239,9 @@ async function generateProjectPlan(projectData) {
     // Validate response structure
     const validation = validateProjectPlan(projectPlan);
     if (!validation.valid) {
+      console.error('[Claude] Validation failed:', validation.error);
+      console.error('[Claude] Project plan keys:', Object.keys(projectPlan));
+      console.error('[Claude] Full project plan:', JSON.stringify(projectPlan, null, 2));
       throw new Error(`Invalid project plan structure: ${validation.error}`);
     }
 
