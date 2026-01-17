@@ -179,6 +179,40 @@ async function generateProjectPlan(projectData) {
       throw new Error('Invalid JSON response from Claude API');
     }
 
+    // Normalize tool structure (ensure alternatives is an array)
+    if (projectPlan.tools && Array.isArray(projectPlan.tools)) {
+      projectPlan.tools = projectPlan.tools.map(tool => {
+        // If alternatives is a string, convert to empty array
+        if (typeof tool.alternatives === 'string') {
+          console.warn('[Claude] Tool has string alternatives, converting to array:', tool.name);
+          tool.alternatives = [];
+        }
+
+        // Ensure alternatives is an array
+        if (!Array.isArray(tool.alternatives)) {
+          tool.alternatives = [];
+        }
+
+        // Validate each alternative has required fields
+        tool.alternatives = tool.alternatives.filter(alt => {
+          if (!alt.name || !alt.specification) {
+            console.warn('[Claude] Filtering out invalid alternative:', alt);
+            return false;
+          }
+          return true;
+        });
+
+        // Ensure tool has all expected fields
+        return {
+          name: tool.name || 'Unknown Tool',
+          specification: tool.specification || '',
+          required: tool.required ?? true,
+          alternatives: tool.alternatives,
+          usage: tool.usage || ''
+        };
+      });
+    }
+
     // Validate response structure
     const validation = validateProjectPlan(projectPlan);
     if (!validation.valid) {
@@ -258,6 +292,7 @@ function validateProjectPlan(projectPlan) {
     'safetyTips',
     'estimatedCost',
     'commonMistakes',
+    // Note: successCriteria is optional for backward compatibility
   ];
 
   for (const field of requiredFields) {
@@ -271,10 +306,15 @@ function validateProjectPlan(projectPlan) {
     return { valid: false, error: 'steps must be a non-empty array' };
   }
 
-  // Validate each step has required fields
+  // Validate each step has required fields (support both old and new formats)
   for (const step of projectPlan.steps) {
-    if (!step.order || !step.title || !step.instructions) {
-      return { valid: false, error: 'Each step must have order, title, and instructions' };
+    // New format: stepNumber, title, instruction
+    // Old format: order, title, instructions
+    const hasStepNumber = step.stepNumber || step.order;
+    const hasInstruction = step.instruction || step.instructions;
+
+    if (!hasStepNumber || !step.title || !hasInstruction) {
+      return { valid: false, error: 'Each step must have stepNumber/order, title, and instruction/instructions' };
     }
   }
 
