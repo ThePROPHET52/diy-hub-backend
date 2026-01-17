@@ -180,13 +180,13 @@ Tool Selection Guidelines:
 - Only mark tools as "required: true" if they're absolutely essential
 - Include "usage" field to explain when/how the tool is used in the project
 
-IMPORTANT:
-- Steps should be thorough enough that someone could follow them WITHOUT watching a video
-- Use specific measurements and directions (e.g., "turn clockwise" not just "turn it")
-- Include sensory cues when helpful (e.g., "You'll hear a click when it's properly seated")
-- If the project is truly dangerous for beginners, say so clearly in the description
+CRITICAL:
+- Respond with ONLY valid JSON, no extra text before or after
+- Do not wrap the JSON in markdown code blocks
+- Make sure all JSON strings are properly escaped
+- Steps should be specific and actionable for beginners
 
-Response Format (JSON only, no extra text):
+Response Format:
 {
   "title": "Clear, concise project title",
   "description": "1-2 sentence project description",
