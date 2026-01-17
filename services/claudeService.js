@@ -2,6 +2,7 @@ const Anthropic = require('@anthropic-ai/sdk');
 const {
   buildEnhancementPrompt,
   buildProjectGenerationPrompt,
+  buildStepExplanationPrompt,
 } = require('../utils/promptBuilder');
 
 // Initialize Anthropic client
@@ -341,6 +342,91 @@ function validateProjectPlan(projectPlan) {
   return { valid: true };
 }
 
+/**
+ * Call Claude API to explain a project step
+ * @param {Object} stepData - Step information
+ * @returns {Promise<Object>} Parsed step explanation object
+ */
+async function explainStep(stepData) {
+  try {
+    const prompt = buildStepExplanationPrompt(stepData);
+
+    console.log(`[Claude] Requesting step explanation for: ${stepData.stepTitle}`);
+
+    const response = await anthropic.messages.create({
+      model: MODEL,
+      max_tokens: 1500, // Step explanations need more tokens
+      temperature: TEMPERATURE,
+      system: prompt.system,
+      messages: prompt.messages,
+    });
+
+    // Extract text content from response
+    const textContent = response.content.find((block) => block.type === 'text');
+    if (!textContent) {
+      throw new Error('No text content in Claude response');
+    }
+
+    // Parse JSON response
+    let explanation;
+    try {
+      explanation = JSON.parse(textContent.text);
+    } catch (parseError) {
+      console.error('[Claude] Failed to parse JSON:', textContent.text);
+      throw new Error('Invalid JSON response from Claude API');
+    }
+
+    console.log(`[Claude] Successfully explained step: ${stepData.stepTitle}`);
+    return explanation;
+  } catch (error) {
+    console.error('[Claude] Error explaining step:', error.message);
+
+    // Enhance error with more context
+    if (error.status === 401) {
+      throw new Error('Invalid Anthropic API key');
+    } else if (error.status === 429) {
+      throw new Error('Rate limit exceeded on Claude API');
+    } else if (error.status >= 500) {
+      throw new Error('Claude API server error');
+    }
+
+    throw error;
+  }
+}
+
+/**
+ * Call Claude API with retry logic for step explanation
+ * @param {Object} stepData - Step information
+ * @param {number} maxRetries - Maximum number of retries (default: 2)
+ * @returns {Promise<Object>} Parsed step explanation object
+ */
+async function explainStepWithRetry(stepData, maxRetries = 2) {
+  let lastError;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await explainStep(stepData);
+    } catch (error) {
+      lastError = error;
+      console.error(`[Claude] Attempt ${attempt + 1} failed:`, error.message);
+
+      // Don't retry on client errors (400-499) except rate limits
+      if (error.status >= 400 && error.status < 500 && error.status !== 429) {
+        throw error;
+      }
+
+      // Wait before retrying with exponential backoff
+      if (attempt < maxRetries) {
+        const delay = Math.pow(2, attempt) * 1000; // 1s, 2s
+        console.log(`[Claude] Retrying in ${delay}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  throw lastError;
+}
+
 module.exports = {
   getProductRecommendation,
   getProductRecommendationWithRetry,
@@ -348,4 +434,6 @@ module.exports = {
   generateProjectPlan,
   generateProjectPlanWithRetry,
   validateProjectPlan,
+  explainStep,
+  explainStepWithRetry,
 };

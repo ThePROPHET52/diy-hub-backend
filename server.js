@@ -5,6 +5,7 @@ const rateLimiter = require('./middleware/rateLimiter');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const apiRoutes = require('./routes/enhance');
 const generateRoutes = require('./routes/generate');
+const explainStepRoutes = require('./routes/explainStep');
 
 // Validate environment variables
 if (!process.env.ANTHROPIC_API_KEY) {
@@ -39,6 +40,7 @@ app.use('/api', rateLimiter);
 // Routes
 app.use('/api', apiRoutes);
 app.use('/api', generateRoutes);
+app.use('/api', explainStepRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {

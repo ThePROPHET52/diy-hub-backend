@@ -196,8 +196,8 @@ Response Format (JSON only, no extra text):
   "steps": [
     {
       "stepNumber": 1,
-      "title": "Brief step title",
-      "instruction": "Detailed instruction following the 3-part format (What, How, Why). Combine all parts into clear, comprehensive instructions.",
+      "title": "ONE concise sentence describing the action (e.g., 'Turn off the water supply')",
+      "instruction": "Detailed multi-sentence explanation following the 3-part format:\n- What to do: Clear description of the action\n- How to do it: Step-by-step instructions with specific techniques\n- Why it matters: Explanation of importance\n\nThis should be 3-5 sentences that provide complete guidance for someone who has never done this before.",
       "estimatedTime": "Realistic time estimate for this specific step (e.g., '10-15 minutes')",
       "warning": "Optional: Specific warning about common mistakes for this step (e.g., '⚠️ Don't over-tighten - hand-tight plus 1/4 turn only')"
     }
@@ -298,6 +298,79 @@ function validateProjectData(projectData) {
   return { valid: true };
 }
 
+/**
+ * Build prompt for explaining a specific project step
+ * @param {Object} stepData - Step information
+ * @returns {Object} Prompt structure
+ */
+function buildStepExplanationPrompt(stepData) {
+  const { stepTitle, projectTitle, projectCategory } = stepData;
+
+  const systemMessage = `You are a helpful assistant for first-time homeowners working on DIY projects.
+Your role is to provide clear, detailed explanations of project steps for complete beginners.
+
+Guidelines:
+1. **Be extremely detailed** - Assume the user has never done this before
+2. **Use simple language** - Define all technical terms
+3. **Include visual cues** - Describe what things should look like
+4. **Provide context** - Explain why this step matters in the bigger picture
+5. **Warn about pitfalls** - Mention common mistakes beginners make
+6. **Be encouraging** - Reassure that this is doable for beginners
+
+Response Format (JSON only):
+{
+  "explanation": "3-5 paragraph detailed explanation covering: (1) What this step means, (2) How to do it with specific techniques, (3) What to look for/expect, (4) Common mistakes to avoid",
+  "keyPoints": [
+    "Important point 1",
+    "Important point 2",
+    "Important point 3"
+  ],
+  "visualCues": "Description of what the user should see/hear/feel at this stage (e.g., 'You should hear a click', 'The connection should feel hand-tight')",
+  "estimatedTime": "Realistic time estimate for this step",
+  "commonMistakes": [
+    "Specific mistake 1 and how to avoid it",
+    "Specific mistake 2 and how to avoid it"
+  ]
+}`;
+
+  const userMessage = `Step: "${stepTitle}"
+Project: ${projectTitle}
+Project Category: ${projectCategory || 'General DIY'}
+
+Please provide a detailed explanation of how to complete this step. Remember, the user is a beginner doing this for the first time.`;
+
+  return {
+    system: systemMessage,
+    messages: [
+      {
+        role: 'user',
+        content: userMessage,
+      },
+    ],
+  };
+}
+
+/**
+ * Validate step explanation request
+ * @param {Object} stepData - Step information
+ * @returns {Object} { valid: boolean, error: string }
+ */
+function validateStepData(stepData) {
+  if (!stepData) {
+    return { valid: false, error: 'Step data is required' };
+  }
+
+  if (!stepData.stepTitle || typeof stepData.stepTitle !== 'string') {
+    return { valid: false, error: 'Step title is required and must be a string' };
+  }
+
+  if (stepData.stepTitle.length < 3) {
+    return { valid: false, error: 'Step title must be at least 3 characters' };
+  }
+
+  return { valid: true };
+}
+
 module.exports = {
   // Material enhancement
   getSystemMessage,
@@ -310,4 +383,8 @@ module.exports = {
   buildProjectGenerationUserMessage,
   buildProjectGenerationPrompt,
   validateProjectData,
+
+  // Step explanation
+  buildStepExplanationPrompt,
+  validateStepData,
 };
