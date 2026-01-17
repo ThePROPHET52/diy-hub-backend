@@ -196,10 +196,10 @@ Response Format (JSON only, no extra text):
   "steps": [
     {
       "stepNumber": 1,
-      "title": "ONE concise sentence describing the action (e.g., 'Turn off the water supply')",
-      "instruction": "Detailed multi-sentence explanation following the 3-part format:\n- What to do: Clear description of the action\n- How to do it: Step-by-step instructions with specific techniques\n- Why it matters: Explanation of importance\n\nThis should be 3-5 sentences that provide complete guidance for someone who has never done this before.",
-      "estimatedTime": "Realistic time estimate for this specific step (e.g., '10-15 minutes')",
-      "warning": "Optional: Specific warning about common mistakes for this step (e.g., '⚠️ Don't over-tighten - hand-tight plus 1/4 turn only')"
+      "title": "Concise one-sentence description (e.g., 'Turn off the water supply')",
+      "instruction": "Detailed 3-5 sentence explanation covering: what to do, how to do it step-by-step, and why it matters. Provide complete guidance for beginners.",
+      "estimatedTime": "Time estimate like '10-15 minutes'",
+      "warning": "Optional warning about common mistakes"
     }
   ],
   "materials": [

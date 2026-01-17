@@ -42,9 +42,20 @@ async function getProductRecommendation(materialData) {
     // Parse JSON response
     let recommendation;
     try {
-      recommendation = JSON.parse(textContent.text);
+      // Sometimes Claude wraps JSON in markdown code blocks, try to extract it
+      let jsonText = textContent.text.trim();
+
+      // Remove markdown code blocks if present
+      if (jsonText.startsWith('```json')) {
+        jsonText = jsonText.replace(/^```json\s*\n?/, '').replace(/\n?```\s*$/, '');
+      } else if (jsonText.startsWith('```')) {
+        jsonText = jsonText.replace(/^```\s*\n?/, '').replace(/\n?```\s*$/, '');
+      }
+
+      recommendation = JSON.parse(jsonText);
     } catch (parseError) {
-      console.error('[Claude] Failed to parse JSON:', textContent.text);
+      console.error('[Claude] Failed to parse JSON. Raw response:', textContent.text);
+      console.error('[Claude] Parse error:', parseError.message);
       throw new Error('Invalid JSON response from Claude API');
     }
 
@@ -174,9 +185,20 @@ async function generateProjectPlan(projectData) {
     // Parse JSON response
     let projectPlan;
     try {
-      projectPlan = JSON.parse(textContent.text);
+      // Sometimes Claude wraps JSON in markdown code blocks, try to extract it
+      let jsonText = textContent.text.trim();
+
+      // Remove markdown code blocks if present
+      if (jsonText.startsWith('```json')) {
+        jsonText = jsonText.replace(/^```json\s*\n?/, '').replace(/\n?```\s*$/, '');
+      } else if (jsonText.startsWith('```')) {
+        jsonText = jsonText.replace(/^```\s*\n?/, '').replace(/\n?```\s*$/, '');
+      }
+
+      projectPlan = JSON.parse(jsonText);
     } catch (parseError) {
-      console.error('[Claude] Failed to parse JSON:', textContent.text);
+      console.error('[Claude] Failed to parse JSON. Raw response:', textContent.text);
+      console.error('[Claude] Parse error:', parseError.message);
       throw new Error('Invalid JSON response from Claude API');
     }
 
@@ -370,9 +392,20 @@ async function explainStep(stepData) {
     // Parse JSON response
     let explanation;
     try {
-      explanation = JSON.parse(textContent.text);
+      // Sometimes Claude wraps JSON in markdown code blocks, try to extract it
+      let jsonText = textContent.text.trim();
+
+      // Remove markdown code blocks if present
+      if (jsonText.startsWith('```json')) {
+        jsonText = jsonText.replace(/^```json\s*\n?/, '').replace(/\n?```\s*$/, '');
+      } else if (jsonText.startsWith('```')) {
+        jsonText = jsonText.replace(/^```\s*\n?/, '').replace(/\n?```\s*$/, '');
+      }
+
+      explanation = JSON.parse(jsonText);
     } catch (parseError) {
-      console.error('[Claude] Failed to parse JSON:', textContent.text);
+      console.error('[Claude] Failed to parse JSON. Raw response:', textContent.text);
+      console.error('[Claude] Parse error:', parseError.message);
       throw new Error('Invalid JSON response from Claude API');
     }
 
