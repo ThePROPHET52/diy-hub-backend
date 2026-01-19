@@ -14,52 +14,60 @@ IMPORTANT GUIDELINES:
 
 1. **Prioritize beginner-friendly products**:
    - Choose brands and products known for ease of use for first-timers
-   - Look for features that help beginners (e.g., paint + primer combos, self-leveling formulas)
+   - Look for features that help beginners (e.g., paint + primer combos, self-leveling formulas, pre-assembled options)
    - Prefer products with clear instructions and forgiving application
-   - Consider availability at major retailers (Home Depot, Lowe's, Ace Hardware)
+   - Consider availability at major retailers (Home Depot, Lowe's, Ace Hardware, local hardware stores)
+   - Avoid products that require specialized tools or expertise
 
 2. **Consider the project context**:
-   - Match product formulation to the project type (interior vs exterior, etc.)
-   - For painting projects, suggest paint + primer combinations
+   - Match product formulation to the project type (interior vs exterior, wet vs dry, high-traffic vs low-traffic)
+   - For painting projects, ALWAYS suggest paint + primer combinations for one-coat coverage
    - For plumbing, suggest compression fittings over soldering when appropriate
+   - For electrical, suggest push-in connectors over wire nuts when safe
    - Use the project category to make context-aware recommendations
+   - Consider typical room sizes and surfaces when estimating quantities
 
-3. **Explain the "why"**:
-   - In your reasoning, clearly explain WHY this specific product is ideal for their project
-   - Explain WHY it's particularly suitable for beginners
+3. **Explain the "why" clearly**:
+   - In your reasoning, CLEARLY explain WHY this specific product is ideal for their exact project
+   - Explain WHY it's particularly suitable for beginners (e.g., "forgiving dry time", "self-leveling", "pre-mixed")
    - Highlight what makes it better than generic alternatives
+   - Mention specific features that make the job easier (e.g., "easy-clean formula", "low odor", "quick-dry")
 
-4. **Quantity guidance**:
-   - Verify the requested quantity makes sense for the typical project
-   - If adjustment needed, suggest the correct amount with clear explanation
-   - Explain coverage rates or usage amounts (e.g., "2 gallons covers 800 sq ft")
+4. **Quantity guidance with details**:
+   - Verify the requested quantity makes sense for the typical project scope
+   - If adjustment needed, suggest the correct amount with CLEAR math (e.g., "2 gallons covers 800 sq ft, typical 12x12 bedroom needs 1.5 gallons for 2 coats")
+   - Explain coverage rates or usage amounts with real-world examples
+   - Always suggest buying slightly more than needed (10-15% extra for waste/touch-ups)
+   - For multi-step projects, break down quantities by step if helpful
 
-5. **Be price-conscious**:
-   - Primary recommendation should be mid-range (not cheapest, not most expensive)
-   - Include one budget-friendly alternative for cost-conscious users
-   - Include one premium alternative with clear explanation of added value
+5. **Be price-conscious with specific guidance**:
+   - Primary recommendation should be mid-range (good value for beginners, not cheapest/most expensive)
+   - Include one budget-friendly alternative with honest tradeoffs (e.g., "Cheaper but may need extra coats")
+   - Include one premium alternative with clear explanation of added value (e.g., "Better durability for high-traffic areas, worth it for kitchens/bathrooms")
+   - Mention typical price ranges when helpful (e.g., "$30-40 per gallon")
 
 6. **Provide actionable buying tips**:
-   - Specify where to find the product in the store (e.g., "Paint aisle, interior section")
-   - What to look for on the label or packaging
-   - Common purchasing mistakes to avoid
-   - Seasonal considerations if applicable (e.g., "Avoid buying in winter")
+   - Specify where to find the product in the store (e.g., "Paint aisle, interior section, look for the purple labels")
+   - What to look for on the label or packaging (e.g., "Check for 'paint + primer' on front")
+   - Common purchasing mistakes to avoid (e.g., "Don't buy outdoor paint for interior walls - too thick and smelly")
+   - Seasonal considerations if applicable (e.g., "Avoid buying exterior paint in winter, won't cure properly below 50°F")
+   - Mention if matching items are needed (e.g., "Buy same brand primer and paint for compatibility")
 
 Response Format (JSON only, no extra text):
 {
   "primaryBrand": "Brand name",
   "primaryModel": "Specific product line or model",
   "specification": "Detailed specs formatted for storage (size, finish, key features)",
-  "reasoning": "2-3 sentences explaining why this is ideal for their project and skill level",
+  "reasoning": "2-3 sentences explaining WHY this specific product is ideal for their exact project and WHY it's suitable for beginners with specific features",
   "alternatives": [
     {
       "brand": "Alternative brand",
       "model": "Product line",
-      "note": "When to choose this option (e.g., 'Budget-friendly option at $X less' or 'Premium choice for added durability')"
+      "note": "When to choose this option (e.g., 'Budget-friendly option at $15 less per gallon but may need 3 coats instead of 2' or 'Premium choice for added durability, worth the extra $20 for high-traffic areas')"
     }
   ],
-  "buyingTips": "3-4 practical, specific tips for purchasing this material",
-  "quantitySuggestion": "Confirmation or adjustment of quantity with clear explanation"
+  "buyingTips": "3-4 practical, specific tips for purchasing this material. Include store location, what to look for, what to avoid, and any seasonal/compatibility considerations",
+  "quantitySuggestion": "Confirmation or adjustment of quantity with clear math and reasoning (e.g., 'The requested 2 gallons is perfect for a 12x12 room with 2 coats. Each gallon covers 400 sq ft, and your room is about 600 sq ft total.' or 'Increase to 3 gallons - typical bathroom refresh needs 2 for walls plus 1 for ceiling.')"
 }`;
 }
 
@@ -142,49 +150,68 @@ Given a problem or project description, generate a detailed, beginner-friendly p
 CRITICAL GUIDELINES FOR STEPS:
 
 1. **Assume ZERO prior knowledge**:
-   - Explain every step as if the user has never done this before
-   - Define technical terms inline (e.g., "Turn off the water supply valve (usually located under the sink)")
-   - Specify which tools to use for each step
+   - Explain every step as if the user has NEVER done this before
+   - Define ALL technical terms inline the first time they appear (e.g., "Turn off the water supply valve (usually a small knob located under the sink)")
+   - Specify WHICH EXACT TOOL to use for each step (e.g., "Use the adjustable wrench (8-inch)" not just "Use a wrench")
+   - Include sensory feedback (e.g., "You'll hear a click when it's secure" or "The connection should feel hand-tight")
+   - Provide visual cues (e.g., "The water should run clear" or "Look for the label marked 'HOT'")
 
-2. **Each step should have 3 parts**:
-   - **What to do**: The action (e.g., "Remove the old faucet")
-   - **How to do it**: Detailed instructions (e.g., "Use the basin wrench to reach up behind the sink and turn the mounting nuts counterclockwise")
-   - **Why it matters**: Brief explanation (e.g., "This prevents water damage when you disconnect the supply lines")
+2. **Each step MUST follow the What/How/Why format**:
+   - **What to do** (title field): Short, action-oriented title (e.g., "Remove the old faucet")
+   - **How to do it** (instruction field - first part): Detailed, step-by-step instructions combining what, how, and why
+     * Example: "Use the basin wrench (included in toolkit) to reach up behind the sink. Turn the mounting nuts counterclockwise - you may need to apply firm pressure as they're often tight from years of use. This disconnects the faucet from the sink so you can remove it without damage."
+   - **Combine all 3 parts into clear, flowing instructions** that feel natural to read
+   - Make sure the instruction tells them EXACTLY what to do, HOW to do it with specific techniques, and WHY it matters
 
-3. **Include validation checks**:
-   - After important steps, tell the user how to verify it was done correctly
-   - Example: "Test for leaks. Turn the water back on slowly and check all connections. You should see no drips."
+3. **Include validation checks after important steps**:
+   - Tell the user EXACTLY how to verify the step was done correctly
+   - Use specific, measurable criteria when possible
+   - Examples:
+     * "Test for leaks: Turn the water back on slowly and check all connections for 60 seconds. You should see no drips or moisture."
+     * "Verify level: Place your bubble level on top. The bubble should be centered between the lines."
+     * "Check tightness: Try to wiggle the fixture. It should not move at all."
 
-4. **Warn about common beginner mistakes**:
-   - For steps where beginners often make errors, add a specific warning
-   - Example: "⚠️ Common mistake: Over-tightening can crack plastic fittings. Hand-tight plus 1/4 turn is enough."
+4. **Warn about common beginner mistakes with specifics**:
+   - For steps where beginners often make errors, add a warning field
+   - Be SPECIFIC about what goes wrong and how to avoid it
+   - Examples:
+     * "⚠️ Common mistake: Over-tightening can crack plastic fittings. Stop when it feels hand-tight, then add only 1/4 turn more."
+     * "⚠️ Don't skip the primer! Paint won't adhere properly to bare drywall and you'll need 4+ coats instead of 2."
+     * "⚠️ Turn off the circuit breaker, not just the light switch. Test with a voltage tester to be absolutely sure."
 
-5. **Provide timing expectations**:
-   - Give realistic time estimates per step
-   - Example: "This step takes about 15-20 minutes. Take your time - rushing leads to mistakes."
+5. **Provide realistic timing expectations per step**:
+   - Give honest time estimates for beginners (not expert times)
+   - Include buffer time for first-timers
+   - Examples:
+     * "This step takes about 15-20 minutes for first-timers. Take your time - rushing leads to mistakes."
+     * "Allow 2-4 hours for the first coat to dry before starting the second coat. Don't rush this or you'll damage the finish."
+     * "Expect to spend 30-45 minutes on this step if you've never done it before. It gets easier with practice."
 
-6. **Break down complex steps**:
-   - If a step involves multiple distinct actions, break it into substeps
-   - Each substep should be a single, clear action
-   - Use clear numbering (e.g., step 6 has substeps 6a, 6b, 6c)
+6. **Break down complex steps into manageable actions**:
+   - If a step involves multiple distinct actions, break it into clear substeps
+   - Each substep should be ONE single, clear action
+   - Number them clearly (e.g., "Step 3: Install the new fixture. First, align the mounting holes...")
+   - Don't overwhelm with too many substeps - 3-5 max per step
 
 Tool Selection Guidelines:
 - For each tool, consider if there are practical alternatives:
-  * Power tools vs manual tools (e.g., power drill vs hand drill)
-  * Budget-friendly vs premium options
-  * Specialized vs multi-purpose tools
+  * Power tools vs manual tools (e.g., power drill vs hand drill - manual takes 3x longer but costs $10 vs $50)
+  * Budget-friendly vs premium options (e.g., basic drill vs impact driver combo kit)
+  * Specialized vs multi-purpose tools (e.g., basin wrench vs adjustable wrench + patience)
 - For EACH alternative, provide:
-  * name: Specific tool name
-  * specification: What makes this tool suitable for the project
-  * tradeoff: Why a user might prefer this over the primary option
-- Only mark tools as "required: true" if they're absolutely essential
-- Include "usage" field to explain when/how the tool is used in the project
+  * name: Specific tool name (be exact - "Cordless Drill/Driver" not just "drill")
+  * specification: What makes this tool suitable for the project (e.g., "18V cordless drill with adjustable clutch for precise torque control")
+  * tradeoff: Why a user might prefer this over the primary option (e.g., "Cheaper ($30 vs $80) but requires more physical effort and takes 2-3x longer")
+- Only mark tools as "required: true" if they're absolutely essential (safety equipment, tools with no reasonable alternative)
+- Include "usage" field to explain WHEN and HOW the tool is used (e.g., "Used in steps 3, 5, and 7 to drill pilot holes and drive screws into studs")
 
 CRITICAL:
 - Respond with ONLY valid JSON, no extra text before or after
 - Do not wrap the JSON in markdown code blocks
 - Make sure all JSON strings are properly escaped
-- Steps should be specific and actionable for beginners
+- Steps should be specific and actionable enough to follow WITHOUT watching a video
+- Use specific measurements and directions (e.g., "Turn clockwise" not "Turn it")
+- Every step should pass the "can a beginner do this without help" test
 
 Response Format:
 {
@@ -228,14 +255,14 @@ Response Format:
     }
   ],
   "safetyTips": [
-    "Important safety tip 1",
-    "Important safety tip 2"
+    "Important safety tip 1 with specific actions (e.g., 'Always turn off circuit breaker at the panel, not just the light switch. Test with a voltage tester before touching any wires.')",
+    "Important safety tip 2 with specific protective equipment (e.g., 'Wear safety glasses when cutting or drilling - even small debris can cause serious eye injury')"
   ],
-  "estimatedCost": "$XX-XX",
+  "estimatedCost": "$XX-XX (Break down by category if helpful, e.g., '$40-60 total: $25-35 for paint, $10-15 for supplies, $5-10 for tools if needed')",
   "commonMistakes": [
-    "Specific mistake beginners make on this type of project with actionable advice to avoid it"
+    "Specific mistake beginners make with clear explanation of what goes wrong and exactly how to avoid it (e.g., 'Skipping primer on new drywall - this causes uneven paint absorption and you'll need 4+ coats instead of 2. Always prime first, let dry 2 hours, then paint.')"
   ],
-  "successCriteria": "How to know the project is completed correctly. Should describe measurable, observable outcomes (e.g., 'No water leaks after 24 hours of use' not just 'works correctly')"
+  "successCriteria": "How to know the project is completed correctly. Should describe multiple measurable, observable outcomes that a beginner can verify (e.g., 'Success indicators: (1) No water leaks after running faucet for 5 minutes, (2) Hot/cold work correctly, (3) Handles turn smoothly without sticking, (4) No drips from base when water is off')"
 }`;
 }
 
