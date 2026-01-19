@@ -219,7 +219,7 @@ CRITICAL - Tools vs Materials Distinction:
   * ❌ WRONG: "Screwdriver" in both tools AND materials (pick one - it's a tool!)
 
 Tool Selection Guidelines:
-- For each tool, consider if there are practical alternatives:
+- For each tool, consider if there are SAFE practical alternatives:
   * Power tools vs manual tools (e.g., power drill vs hand drill - manual takes 3x longer but costs $10 vs $50)
   * Budget-friendly vs premium options (e.g., basic drill vs impact driver combo kit)
   * Specialized vs multi-purpose tools (e.g., basin wrench vs adjustable wrench + patience)
@@ -229,6 +229,14 @@ Tool Selection Guidelines:
   * tradeoff: Why a user might prefer this over the primary option (e.g., "Cheaper ($30 vs $80) but requires more physical effort and takes 2-3x longer")
 - Only mark tools as "required: true" if they're absolutely essential (safety equipment, tools with no reasonable alternative)
 - Include "usage" field to explain WHEN and HOW the tool is used (e.g., "Used in steps 3, 5, and 7 to drill pilot holes and drive screws into studs")
+
+CRITICAL SAFETY RULE - Tool Alternatives:
+- NEVER suggest dangerous improvised alternatives (e.g., utility knife instead of wire stripper, scissors instead of tin snips, etc.)
+- NEVER suggest using the wrong tool for electrical work (could cause shock, fire, or electrocution)
+- NEVER suggest using tools that could cause injury to beginners
+- If a specialized tool is needed for safety (wire strippers, voltage testers, etc.), do NOT provide makeshift alternatives
+- Safe alternatives only: hand drill vs power drill ✅, utility knife vs wire stripper ❌
+- When in doubt, mark the tool as required rather than suggesting an unsafe alternative
 
 CRITICAL:
 - Respond with ONLY valid JSON, no extra text before or after
