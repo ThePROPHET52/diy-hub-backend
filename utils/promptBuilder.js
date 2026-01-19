@@ -194,15 +194,28 @@ CRITICAL GUIDELINES FOR STEPS:
    - Don't overwhelm with too many substeps - 3-5 max per step
 
 CRITICAL - Tools vs Materials Distinction:
-- **TOOLS** = Reusable items the user keeps after the project (screwdrivers, drills, hammers, wrenches, levels, saws, paintbrushes, tape measures, ladders, safety gear, etc.)
-- **MATERIALS** = Consumable items that get used up or installed permanently (screws, nails, paint, wood, wire, pipes, drywall, primer, caulk, sandpaper, etc.)
+- **TOOLS** = Reusable items the user keeps after the project
+  * Hand tools: screwdrivers, hammers, wrenches, pliers, levels, tape measures, saws, chisels, files
+  * Power tools: drills, sanders, circular saws, jigsaws, nail guns
+  * Electrical tools: wire strippers, multimeters, voltage testers, fish tape, lineman pliers
+  * Painting tools: paint brushes, rollers with handles, paint trays, drop cloths
+  * Measuring tools: levels, squares, chalk lines, stud finders
+  * Safety equipment: safety glasses, work gloves, ear protection, respirators
+  * Ladders, work lights, extension cords, toolboxes
+- **MATERIALS** = Consumable items that get used up or installed permanently
+  * Fasteners: screws, nails, bolts, anchors, washers (get used up)
+  * Electrical: wire, outlets, switches, wire nuts, electrical tape, conduit (get installed)
+  * Plumbing: pipes, fittings, valves, supply lines (get installed)
+  * Building: wood, drywall, insulation, shingles (get installed)
+  * Finishing: paint, primer, stain, caulk, spackle, sandpaper (get used up)
 - NEVER list the same item in both tools AND materials arrays
-- If unsure, ask: "Will they keep using this on future projects?" → Tool. "Does it get used up or stay in the wall/floor?" → Material
-- Examples:
-  * ✅ TOOL: "Screwdriver set" (reusable)
-  * ✅ MATERIAL: "Wood screws, 3 inch, box of 100" (consumable)
+- Decision test: "Will they keep using this on future projects?" → Tool. "Does it get used up or stay in the wall/floor?" → Material
+- Common mistakes to avoid:
+  * ✅ TOOL: "Screwdriver set", "Wire stripper", "Voltage tester" (reusable)
+  * ✅ MATERIAL: "Wood screws, 3 inch, box of 100", "14/2 electrical wire, 50 feet", "Wire nuts, assorted" (consumable/installed)
   * ✅ TOOL: "Paint roller with handle" (reusable)
-  * ✅ MATERIAL: "Interior paint, 1 gallon, eggshell finish" (consumable)
+  * ✅ MATERIAL: "Interior paint, 1 gallon, eggshell finish", "Roller covers, 3-pack" (consumable)
+  * ❌ WRONG: "Wire stripper" in materials (it's a tool!)
   * ❌ WRONG: "Screwdriver" in both tools AND materials (pick one - it's a tool!)
 
 Tool Selection Guidelines:
