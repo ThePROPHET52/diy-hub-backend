@@ -398,18 +398,31 @@ async function explainStep(stepData) {
       // Sometimes Claude wraps JSON in markdown code blocks, try to extract it
       let jsonText = textContent.text.trim();
 
+      console.log('[Claude] Raw response preview:', jsonText.substring(0, 200) + '...');
+
       // Remove markdown code blocks if present
       if (jsonText.startsWith('```json')) {
+        console.log('[Claude] Detected JSON markdown block, stripping');
         jsonText = jsonText.replace(/^```json\s*\n?/, '').replace(/\n?```\s*$/, '');
       } else if (jsonText.startsWith('```')) {
+        console.log('[Claude] Detected generic markdown block, stripping');
         jsonText = jsonText.replace(/^```\s*\n?/, '').replace(/\n?```\s*$/, '');
       }
 
       explanation = JSON.parse(jsonText);
+
+      // Validate structure
+      if (!explanation.explanation || !explanation.keyPoints) {
+        console.error('[Claude] Response missing required fields:', Object.keys(explanation));
+        throw new Error('Response missing required fields');
+      }
+
+      console.log('[Claude] Successfully parsed step explanation with fields:', Object.keys(explanation));
     } catch (parseError) {
-      console.error('[Claude] Failed to parse JSON. Raw response:', textContent.text);
+      console.error('[Claude] Failed to parse JSON.');
+      console.error('[Claude] Raw response (first 500 chars):', textContent.text.substring(0, 500));
       console.error('[Claude] Parse error:', parseError.message);
-      throw new Error('Invalid JSON response from Claude API');
+      throw new Error(`Invalid JSON response from Claude API: ${parseError.message}`);
     }
 
     console.log(`[Claude] Successfully explained step: ${stepData.stepTitle}`);
