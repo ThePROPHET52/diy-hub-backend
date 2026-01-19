@@ -409,7 +409,57 @@ async function explainStep(stepData) {
         jsonText = jsonText.replace(/^```\s*\n?/, '').replace(/\n?```\s*$/, '');
       }
 
-      explanation = JSON.parse(jsonText);
+      // Fix unescaped newlines in JSON string values
+      // Claude sometimes puts literal newlines which break JSON.parse()
+      // We need a smarter approach: only escape newlines inside quoted strings
+
+      let isInString = false;
+      let escape = false;
+      let fixedJson = '';
+
+      for (let i = 0; i < jsonText.length; i++) {
+        const char = jsonText[i];
+
+        if (escape) {
+          fixedJson += char;
+          escape = false;
+          continue;
+        }
+
+        if (char === '\\') {
+          fixedJson += char;
+          escape = true;
+          continue;
+        }
+
+        if (char === '"') {
+          isInString = !isInString;
+          fixedJson += char;
+          continue;
+        }
+
+        // If we're in a string and hit a newline, escape it
+        if (isInString && char === '\n') {
+          fixedJson += '\\n';
+          continue;
+        }
+
+        // If we're in a string and hit a tab, escape it
+        if (isInString && char === '\t') {
+          fixedJson += '\\t';
+          continue;
+        }
+
+        // If we're in a string and hit a carriage return, escape it
+        if (isInString && char === '\r') {
+          fixedJson += '\\r';
+          continue;
+        }
+
+        fixedJson += char;
+      }
+
+      explanation = JSON.parse(fixedJson);
 
       // Validate structure
       if (!explanation.explanation || !explanation.keyPoints) {
