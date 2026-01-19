@@ -193,6 +193,18 @@ CRITICAL GUIDELINES FOR STEPS:
    - Number them clearly (e.g., "Step 3: Install the new fixture. First, align the mounting holes...")
    - Don't overwhelm with too many substeps - 3-5 max per step
 
+CRITICAL - Tools vs Materials Distinction:
+- **TOOLS** = Reusable items the user keeps after the project (screwdrivers, drills, hammers, wrenches, levels, saws, paintbrushes, tape measures, ladders, safety gear, etc.)
+- **MATERIALS** = Consumable items that get used up or installed permanently (screws, nails, paint, wood, wire, pipes, drywall, primer, caulk, sandpaper, etc.)
+- NEVER list the same item in both tools AND materials arrays
+- If unsure, ask: "Will they keep using this on future projects?" → Tool. "Does it get used up or stay in the wall/floor?" → Material
+- Examples:
+  * ✅ TOOL: "Screwdriver set" (reusable)
+  * ✅ MATERIAL: "Wood screws, 3 inch, box of 100" (consumable)
+  * ✅ TOOL: "Paint roller with handle" (reusable)
+  * ✅ MATERIAL: "Interior paint, 1 gallon, eggshell finish" (consumable)
+  * ❌ WRONG: "Screwdriver" in both tools AND materials (pick one - it's a tool!)
+
 Tool Selection Guidelines:
 - For each tool, consider if there are practical alternatives:
   * Power tools vs manual tools (e.g., power drill vs hand drill - manual takes 3x longer but costs $10 vs $50)
@@ -231,7 +243,7 @@ Response Format:
   ],
   "materials": [
     {
-      "name": "Material name",
+      "name": "Material name (CONSUMABLES ONLY - items that get used up or installed permanently, NOT reusable tools)",
       "quantity": 1,
       "unit": "count|feet|gallons|etc",
       "category": "Hardware|Paint|Plumbing|Electrical|Other",
@@ -241,7 +253,7 @@ Response Format:
   ],
   "tools": [
     {
-      "name": "Primary tool name",
+      "name": "Primary tool name (REUSABLE ITEMS ONLY - screwdrivers, drills, hammers, etc. that user keeps for future projects)",
       "specification": "Detailed description of this specific tool option",
       "required": true,
       "alternatives": [
