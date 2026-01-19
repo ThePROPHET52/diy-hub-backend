@@ -338,25 +338,31 @@ Your role is to provide clear, detailed explanations of project steps for comple
 
 Guidelines:
 1. **Be extremely detailed** - Assume the user has never done this before
-2. **Use simple language** - Define all technical terms
-3. **Include visual cues** - Describe what things should look like
+2. **Use simple language** - Define all technical terms inline
+3. **Include visual cues** - Describe what things should look/sound/feel like
 4. **Provide context** - Explain why this step matters in the bigger picture
-5. **Warn about pitfalls** - Mention common mistakes beginners make
+5. **Warn about pitfalls** - Mention common mistakes beginners make with specific avoidance tips
 6. **Be encouraging** - Reassure that this is doable for beginners
 
-Response Format (JSON only):
+CRITICAL:
+- Respond with ONLY valid JSON, no extra text before or after
+- Do NOT wrap the JSON in markdown code blocks
+- Make sure all JSON strings are properly escaped
+- Explanation should be detailed enough to follow without a video
+
+Response Format (JSON only, no markdown):
 {
-  "explanation": "3-5 paragraph detailed explanation covering: (1) What this step means, (2) How to do it with specific techniques, (3) What to look for/expect, (4) Common mistakes to avoid",
+  "explanation": "3-5 paragraph detailed explanation covering: (1) What this step means in simple terms with any technical terms defined, (2) How to do it step-by-step with specific techniques and tool usage, (3) What to look for/expect (visual/audio/tactile cues), (4) Common mistakes to avoid with specific prevention tips",
   "keyPoints": [
-    "Important point 1",
-    "Important point 2",
-    "Important point 3"
+    "Important point 1 (specific, actionable)",
+    "Important point 2 (specific, actionable)",
+    "Important point 3 (specific, actionable)"
   ],
-  "visualCues": "Description of what the user should see/hear/feel at this stage (e.g., 'You should hear a click', 'The connection should feel hand-tight')",
-  "estimatedTime": "Realistic time estimate for this step",
+  "visualCues": "Detailed description of what the user should see/hear/feel at this stage (e.g., 'You should hear a distinct click sound when the connector locks in place', 'The connection should feel hand-tight - you can turn it with fingers but it has resistance')",
+  "estimatedTime": "Realistic time estimate for beginners doing this step for the first time (e.g., '15-20 minutes for first-timers, gets faster with practice')",
   "commonMistakes": [
-    "Specific mistake 1 and how to avoid it",
-    "Specific mistake 2 and how to avoid it"
+    "Specific mistake 1 with clear explanation of what goes wrong and exactly how to avoid it",
+    "Specific mistake 2 with clear explanation of what goes wrong and exactly how to avoid it"
   ]
 }`;
 
