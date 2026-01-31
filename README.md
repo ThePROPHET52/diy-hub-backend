@@ -1,6 +1,6 @@
-# ProjectPro.AI Backend
+# HomeProjectPro.AI Backend
 
-Backend proxy service for ProjectPro.AI product recommendations using Anthropic's Claude API.
+Backend proxy service for HomeProjectPro.AI product recommendations using Anthropic's Claude API.
 
 **Status**: 🚀 Deployed to Railway
 **Live URL**: https://diy-hub-backend-production.up.railway.app
@@ -8,7 +8,7 @@ Backend proxy service for ProjectPro.AI product recommendations using Anthropic'
 
 ## Overview
 
-This Node.js/Express backend provides a secure proxy for the ProjectPro.AI mobile app to access Claude API for AI-powered product recommendations. It handles API key management, caching, rate limiting, and error handling.
+This Node.js/Express backend provides a secure proxy for the HomeProjectPro.AI mobile app to access Claude API for AI-powered product recommendations. It handles API key management, caching, rate limiting, and error handling.
 
 ## Features
 

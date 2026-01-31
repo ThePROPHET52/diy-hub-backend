@@ -1,7 +1,7 @@
 {
   "name": "diy-hub-backend",
   "version": "1.0.0",
-  "description": "Backend proxy for ProjectPro.AI product recommendations using Claude API",
+  "description": "Backend proxy for HomeProjectPro.AI product recommendations using Claude API",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

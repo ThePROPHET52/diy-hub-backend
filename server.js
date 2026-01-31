@@ -46,7 +46,7 @@ app.use('/api', explainStepRoutes);
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'ProjectPro.AI Backend API',
+    message: 'HomeProjectPro.AI Backend API',
     version: '1.0.0',
     endpoints: {
       health: 'GET /api/health',
@@ -65,7 +65,7 @@ app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`[Server] ProjectPro.AI Backend listening on port ${PORT}`);
+  console.log(`[Server] HomeProjectPro.AI Backend listening on port ${PORT}`);
   console.log(`[Server] Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`[Server] Rate limit: ${process.env.RATE_LIMIT_MAX || 100} requests per hour`);
   console.log(`[Server] Cache TTL: ${process.env.CACHE_TTL_SECONDS || 604800} seconds`);
