@@ -10,7 +10,7 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-const MODEL = 'claude-3-haiku-20240307';
+const MODEL = 'claude-haiku-4-5-20251001';
 const MAX_TOKENS = 1000;
 const TEMPERATURE = 0.3;
 
