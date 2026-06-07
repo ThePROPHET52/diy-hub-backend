@@ -364,7 +364,7 @@ function validateProjectData(projectData) {
  * @returns {Object} Prompt structure
  */
 function buildStepExplanationPrompt(stepData) {
-  const { stepTitle, projectTitle, projectCategory } = stepData;
+  const { stepTitle, stepInstruction, projectTitle, projectCategory } = stepData;
 
   const systemMessage = `You are a helpful assistant for first-time homeowners working on DIY projects.
 Your role is to provide clear, detailed explanations of project steps for complete beginners.
@@ -399,9 +399,13 @@ Response Format (JSON only, no markdown):
   ]
 }`;
 
+  const instructionContext = stepInstruction
+    ? `\nExisting step guidance: "${stepInstruction}"\n\nBuild on and deepen this guidance — do not simply repeat it.`
+    : '';
+
   const userMessage = `Step: "${stepTitle}"
 Project: ${projectTitle}
-Project Category: ${projectCategory || 'General DIY'}
+Project Category: ${projectCategory || 'General DIY'}${instructionContext}
 
 Please provide a detailed explanation of how to complete this step. Remember, the user is a beginner doing this for the first time.`;
 

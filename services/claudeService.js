@@ -170,7 +170,7 @@ async function generateProjectPlan(projectData) {
 
     const response = await anthropic.messages.create({
       model: MODEL,
-      max_tokens: 3000, // Project plans need more tokens
+      max_tokens: 4000, // Project plans need more tokens
       temperature: TEMPERATURE,
       system: prompt.system,
       messages: prompt.messages,
