@@ -31,7 +31,7 @@ async function getProductRecommendation(materialData) {
       temperature: TEMPERATURE,
       system: prompt.system,
       messages: prompt.messages,
-    });
+    }, { timeout: 30000 });
 
     // Extract text content from response
     const textContent = response.content.find((block) => block.type === 'text');
@@ -54,8 +54,7 @@ async function getProductRecommendation(materialData) {
 
       recommendation = JSON.parse(jsonText);
     } catch (parseError) {
-      console.error('[Claude] Failed to parse JSON. Raw response:', textContent.text);
-      console.error('[Claude] Parse error:', parseError.message);
+      console.error('[Claude] Failed to parse recommendation JSON. Parse error:', parseError.message);
       throw new Error('Invalid JSON response from Claude API');
     }
 
@@ -170,11 +169,11 @@ async function generateProjectPlan(projectData) {
 
     const response = await anthropic.messages.create({
       model: MODEL,
-      max_tokens: 4000, // Project plans need more tokens
+      max_tokens: 4000,
       temperature: TEMPERATURE,
       system: prompt.system,
       messages: prompt.messages,
-    });
+    }, { timeout: 30000 });
 
     // Extract text content from response
     const textContent = response.content.find((block) => block.type === 'text');
@@ -197,8 +196,7 @@ async function generateProjectPlan(projectData) {
 
       projectPlan = JSON.parse(jsonText);
     } catch (parseError) {
-      console.error('[Claude] Failed to parse JSON. Raw response:', textContent.text);
-      console.error('[Claude] Parse error:', parseError.message);
+      console.error('[Claude] Failed to parse project JSON. Parse error:', parseError.message);
       throw new Error('Invalid JSON response from Claude API');
     }
 
@@ -239,9 +237,7 @@ async function generateProjectPlan(projectData) {
     // Validate response structure
     const validation = validateProjectPlan(projectPlan);
     if (!validation.valid) {
-      console.error('[Claude] Validation failed:', validation.error);
-      console.error('[Claude] Project plan keys:', Object.keys(projectPlan));
-      console.error('[Claude] Full project plan:', JSON.stringify(projectPlan, null, 2));
+      console.error('[Claude] Project plan validation failed:', validation.error, '| Keys:', Object.keys(projectPlan).join(', '));
       throw new Error(`Invalid project plan structure: ${validation.error}`);
     }
 
@@ -380,11 +376,11 @@ async function explainStep(stepData) {
 
     const response = await anthropic.messages.create({
       model: MODEL,
-      max_tokens: 1500, // Step explanations need more tokens
+      max_tokens: 1500,
       temperature: TEMPERATURE,
       system: prompt.system,
       messages: prompt.messages,
-    });
+    }, { timeout: 30000 });
 
     // Extract text content from response
     const textContent = response.content.find((block) => block.type === 'text');
@@ -398,14 +394,10 @@ async function explainStep(stepData) {
       // Sometimes Claude wraps JSON in markdown code blocks, try to extract it
       let jsonText = textContent.text.trim();
 
-      console.log('[Claude] Raw response preview:', jsonText.substring(0, 200) + '...');
-
       // Remove markdown code blocks if present
       if (jsonText.startsWith('```json')) {
-        console.log('[Claude] Detected JSON markdown block, stripping');
         jsonText = jsonText.replace(/^```json\s*\n?/, '').replace(/\n?```\s*$/, '');
       } else if (jsonText.startsWith('```')) {
-        console.log('[Claude] Detected generic markdown block, stripping');
         jsonText = jsonText.replace(/^```\s*\n?/, '').replace(/\n?```\s*$/, '');
       }
 
@@ -469,9 +461,7 @@ async function explainStep(stepData) {
 
       console.log('[Claude] Successfully parsed step explanation with fields:', Object.keys(explanation));
     } catch (parseError) {
-      console.error('[Claude] Failed to parse JSON.');
-      console.error('[Claude] Raw response (first 500 chars):', textContent.text.substring(0, 500));
-      console.error('[Claude] Parse error:', parseError.message);
+      console.error('[Claude] Failed to parse step explanation JSON. Parse error:', parseError.message);
       throw new Error(`Invalid JSON response from Claude API: ${parseError.message}`);
     }
 

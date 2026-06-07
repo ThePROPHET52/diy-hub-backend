@@ -83,15 +83,8 @@ router.post('/explain-step', async (req, res, next) => {
       cached: false,
     });
   } catch (error) {
-    console.error('[explain-step] Error explaining step:', error);
-    console.error('[explain-step] Error stack:', error.stack);
-
-    // Return proper error response instead of passing to middleware
-    res.status(500).json({
-      success: false,
-      error: 'Server error',
-      message: error.message || 'Failed to generate explanation',
-    });
+    console.error('[explain-step] Error explaining step:', error.message);
+    next(error);
   }
 });
 

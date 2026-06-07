@@ -132,8 +132,20 @@ function validateMaterialData(materialData) {
     return { valid: false, error: 'Material name is required and must be a string' };
   }
 
+  if (materialData.name.length > 200) {
+    return { valid: false, error: 'Material name must be under 200 characters' };
+  }
+
+  if (materialData.specification && materialData.specification.length > 500) {
+    return { valid: false, error: 'Material specification must be under 500 characters' };
+  }
+
   if (!materialData.quantity || typeof materialData.quantity !== 'number') {
     return { valid: false, error: 'Material quantity is required and must be a number' };
+  }
+
+  if (materialData.quantity < 0 || materialData.quantity > 100000) {
+    return { valid: false, error: 'Material quantity must be between 0 and 100,000' };
   }
 
   return { valid: true };
@@ -355,6 +367,10 @@ function validateProjectData(projectData) {
     return { valid: false, error: 'Project description must be at least 10 characters' };
   }
 
+  if (projectData.description.length > 5000) {
+    return { valid: false, error: 'Project description must be under 5000 characters' };
+  }
+
   return { valid: true };
 }
 
@@ -436,6 +452,14 @@ function validateStepData(stepData) {
 
   if (stepData.stepTitle.length < 3) {
     return { valid: false, error: 'Step title must be at least 3 characters' };
+  }
+
+  if (stepData.stepTitle.length > 300) {
+    return { valid: false, error: 'Step title must be under 300 characters' };
+  }
+
+  if (stepData.stepInstruction && stepData.stepInstruction.length > 2000) {
+    return { valid: false, error: 'Step instruction must be under 2000 characters' };
   }
 
   return { valid: true };

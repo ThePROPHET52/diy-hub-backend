@@ -69,20 +69,4 @@ router.get('/health', (req, res) => {
   });
 });
 
-/**
- * GET /api/cache-stats
- * Get cache statistics (for debugging)
- */
-router.get('/cache-stats', (req, res) => {
-  const { getCacheStats } = require('../utils/cache');
-  const stats = getCacheStats();
-
-  res.json({
-    success: true,
-    data: {
-      cacheStats: stats,
-    },
-  });
-});
-
 module.exports = router;
